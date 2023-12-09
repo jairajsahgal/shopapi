@@ -7,7 +7,10 @@ WORKDIR /code
 
 COPY ./requirements.txt .
 
-RUN apt-get update -y && apt-get install -y netcat && pip install -r requirements.txt && pip install --upgrade 'sentry-sdk[django]'
+RUN apt-get update -y && apt-get install -y netcat && apt-get install --no-install-recommends -y -q \
+    git libpq-dev python-dev build-essential libsnappy-dev && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && pip install --upgrade pip setuptools wheel && pip install -r requirements.txt && pip install --upgrade 'sentry-sdk[django]'
 
 COPY ./entrypoint.sh .
 RUN chmod +x /code/entrypoint.sh
